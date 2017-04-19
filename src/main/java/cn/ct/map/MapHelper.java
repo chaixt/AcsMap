@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.nio.charset.Charset;
 
 import org.geotools.coverage.grid.io.AbstractGridCoverage2DReader;
 import org.geotools.coverage.grid.io.AbstractGridFormat;
@@ -24,6 +25,7 @@ import org.geotools.styling.SLD;
 import org.geotools.styling.Style;
 import org.geotools.styling.StyleFactory;
 import org.opengis.filter.FilterFactory2;
+import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
 /**
  * 对MapContent进行封装
@@ -72,11 +74,14 @@ public class MapHelper {
 			return false;
 		}
 	}
-
-	public boolean addShp(String shp_path, Style style) {
+	public boolean addShp(String shp_path, Style style){
+		return addShp(shp_path, style, Charset.defaultCharset());
+	}
+	public boolean addShp(String shp_path, Style style, Charset charset) {
 		try {
 			ShapefileDataStore sds = new ShapefileDataStore(new File(shp_path)
 					.toURI().toURL());
+			sds.setCharset(charset);
 			ContentFeatureSource src = sds.getFeatureSource();
 			if (style == null) {
 				src.getSchema().getGeometryDescriptor().getName();
@@ -117,9 +122,17 @@ public class MapHelper {
 				mapBounds);
 	}
 
+	public ReferencedEnvelope getMaxBounds(){
+		return map.getMaxBounds();
+	}
+	
 	public BufferedImage toBImg(Rectangle imgBounds,
 			ReferencedEnvelope mapBounds) {
 		return toBImg(imgBounds, BufferedImage.TYPE_INT_RGB, mapBounds);
+	}
+	
+	public CoordinateReferenceSystem getCRS(){
+		return map.getCoordinateReferenceSystem();
 	}
 
 	public BufferedImage toBImg(Rectangle imgBounds, int imgType,
@@ -136,6 +149,10 @@ public class MapHelper {
 		Graphics2D g2d = bimg.createGraphics();
 		GTRenderer render = new StreamingRenderer();
 		render.setMapContent(map);
+		System.out.println(map.getMaxBounds());
+		System.out.println(map.getMaxBounds().getCoordinateReferenceSystem());
+		System.out.println(mapBounds);
+		System.out.println(mapBounds.getCoordinateReferenceSystem());
 		render.paint(g2d, imgBounds, mapBounds);
 		return bimg;
 	}
