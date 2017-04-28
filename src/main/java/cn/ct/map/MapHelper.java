@@ -149,10 +149,6 @@ public class MapHelper {
 		Graphics2D g2d = bimg.createGraphics();
 		GTRenderer render = new StreamingRenderer();
 		render.setMapContent(map);
-		System.out.println(map.getMaxBounds());
-		System.out.println(map.getMaxBounds().getCoordinateReferenceSystem());
-		System.out.println(mapBounds);
-		System.out.println(mapBounds.getCoordinateReferenceSystem());
 		render.paint(g2d, imgBounds, mapBounds);
 		return bimg;
 	}
