@@ -1,7 +1,9 @@
-package cn.ct.map.bean;
+package cn.ct.map.bean.setter;
 
 import java.awt.Font;
 import java.awt.Graphics2D;
+
+import cn.ct.map.bean.IGDraw;
 
 public class GFontSetter implements IGDraw {
 	private Font font = new Font("宋体", Font.PLAIN, 16);
@@ -37,12 +39,12 @@ public class GFontSetter implements IGDraw {
 	}
 
 	@Override
-	public Graphics2D draw(Graphics2D g2d) {
+	public Graphics2D draw(Graphics2D g2d, int width, int height) {
 		if(g2d != null && font != null){
 			g2d.setFont(font);
 		}
 		if(drawObj != null){
-			drawObj.draw(g2d);
+			drawObj.draw(g2d, width, height);
 		}
 		return g2d;
 	}

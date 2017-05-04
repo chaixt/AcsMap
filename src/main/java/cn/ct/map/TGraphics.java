@@ -48,7 +48,7 @@ public class TGraphics {
 			for(int i = 0; i < glist.size(); i++){
 				if(glist.get(i) != null){
 					Graphics2D g2d = bimg.createGraphics();
-					glist.get(i).draw(g2d);
+					glist.get(i).draw(g2d, width, height);
 					g2d.dispose();
 				}
 			}

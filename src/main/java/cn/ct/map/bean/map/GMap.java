@@ -1,4 +1,4 @@
-package cn.ct.map.bean;
+package cn.ct.map.bean.map;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -26,6 +26,9 @@ import org.geotools.styling.StyleFactory;
 import org.opengis.filter.FilterFactory2;
 import org.opengis.referencing.crs.CoordinateReferenceSystem;
 
+import cn.ct.map.bean.IGDraw;
+import cn.ct.map.bean.graphics.GRectangle;
+
 public class GMap extends GRectangle implements IGDraw {
 
 	private static StyleFactory sf = CommonFactoryFinder.getStyleFactory();
@@ -40,14 +43,44 @@ public class GMap extends GRectangle implements IGDraw {
 	}
 
 	private MapContent map = new MapContent();
+	private MReferencePos center = new MReferencePos(0, 0);
+	private double pxSize = 1;
 	private ReferencedEnvelope mapBounds;
 
+	protected ReferencedEnvelope updateMapBounds() {
+		if(map != null){
+			if(center != null && center.getCrs() == null){
+				center.setCrs(map.getCoordinateReferenceSystem());
+			}
+			if(this.getWidth() > 0 && this.getHeight() > 0 & pxSize > 0 & center != null){
+				double map_half_width = 0.5 * this.getWidth() / pxSize;
+				double map_half_height = 0.5 * this.getHeight() / pxSize;
+				mapBounds = new ReferencedEnvelope(center.getX() - map_half_width ,center.getX() + map_half_width, center.getY() - map_half_height, center.getY() + map_half_height, center.getCrs());
+			} else{
+				mapBounds = map.getMaxBounds();
+			}
+		}
+		return mapBounds;
+	}
+	
+	protected void updateGEnvelop() {
+		if(map != null){
+			if(pxSize > 0 & mapBounds != null){
+				center = new MReferencePos(mapBounds.getMedian(0), mapBounds.getMedian(1), mapBounds.getCoordinateReferenceSystem());
+				this.setWidth((int)(mapBounds.getWidth() * pxSize + 0.5));
+				this.setHeight((int)(mapBounds.getHeight() * pxSize + 0.5));
+			}
+		}
+	}
+	
 	public GMap() {
 		super();
 	}
 	public GMap(GMap gmap) {
 		super();
 		this.map = gmap.map;
+		this.center = gmap.center;
+		this.pxSize = gmap.pxSize;
 		this.mapBounds = gmap.mapBounds;
 	}
 
@@ -67,15 +100,49 @@ public class GMap extends GRectangle implements IGDraw {
 	}
 
 	public void setMap(MapContent map) {
-		this.map = map;
+		if(this.map != null){
+			this.map = map;
+			updateMapBounds();
+		}
 	}
 
 	public ReferencedEnvelope getMapBounds() {
-		return mapBounds;
+		return new ReferencedEnvelope(mapBounds);
+	}
+	
+	public void setMapBounds(ReferencedEnvelope mapBounds) {
+		if(mapBounds != null){
+			this.mapBounds = new ReferencedEnvelope(mapBounds);
+			updateGEnvelop();
+		}
 	}
 
-	public void setMapBounds(ReferencedEnvelope mapBounds) {
-		this.mapBounds = mapBounds;
+	public double getPxSize() {
+		return pxSize;
+	}
+
+	public void setPxSize(double pxSize) {
+		if(pxSize > 0){
+			this.pxSize = pxSize;
+			updateMapBounds();
+		}
+	}
+
+	public void setCenter(MPos pos) {
+		if(pos != null){
+			if(this.map != null){
+				this.center = new MReferencePos(pos, this.map.getCoordinateReferenceSystem());
+				updateMapBounds();
+			}else{
+				this.center = new MReferencePos(pos);
+			}
+		}
+	}
+	public void setCenter(MReferencePos pos) {
+		if(pos != null){
+			this.center = pos;
+			updateMapBounds();
+		}
 	}
 
 	public boolean addRaster(String raster_path) {
@@ -130,7 +197,7 @@ public class GMap extends GRectangle implements IGDraw {
 	}
 
 	@Override
-	public Graphics2D draw(Graphics2D g2d) {
+	public Graphics2D draw(Graphics2D g2d, int width, int height) {
 		if(mapBounds == null){
 			mapBounds = map.getMaxBounds();
 		}
@@ -138,6 +205,10 @@ public class GMap extends GRectangle implements IGDraw {
 		render.setMapContent(map);
 		render.paint(g2d, new Rectangle(this.getX(), this.getY(), this.getWidth(), this.getHeight()), mapBounds);
 		return g2d;
+	}
+
+	public MReferencePos getCenter() {
+		return new MReferencePos(this.center);
 	}
 
 }

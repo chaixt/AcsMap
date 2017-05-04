@@ -1,4 +1,4 @@
-package cn.ct.map.bean;
+package cn.ct.map.bean.graphics;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import cn.ct.map.bean.IGDraw;
 
 public class GImg extends GRectangle implements IGDraw{
 	private Image img;
@@ -57,7 +59,7 @@ public class GImg extends GRectangle implements IGDraw{
 	}
 
 	@Override
-	public Graphics2D draw(Graphics2D g2d) {
+	public Graphics2D draw(Graphics2D g2d, int width, int height) {
 		if(g2d != null && img != null){
 			g2d.drawImage(img, getX(), getY(), getWidth(), getHeight(), null);
 		}

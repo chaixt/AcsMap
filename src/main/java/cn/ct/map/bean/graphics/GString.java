@@ -1,6 +1,8 @@
-package cn.ct.map.bean;
+package cn.ct.map.bean.graphics;
 
 import java.awt.Graphics2D;
+
+import cn.ct.map.bean.IGDraw;
 
 public class GString extends GPos implements IGDraw {
 	private String string;
@@ -32,7 +34,7 @@ public class GString extends GPos implements IGDraw {
 	}
 
 	@Override
-	public Graphics2D draw(Graphics2D g2d) {
+	public Graphics2D draw(Graphics2D g2d, int width, int height) {
 		if(g2d != null && string != null){
 			g2d.drawString(string, getX(), getY());
 		}
