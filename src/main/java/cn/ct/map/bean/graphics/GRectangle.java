@@ -65,4 +65,15 @@ public class GRectangle extends GPos implements IRectangle<Integer> {
 		}
 		return g2d;
 	}
+
+
+	@Override
+	public void setX(double x) {
+		this.setX(new Integer((int)x));
+	}
+
+	@Override
+	public void setY(double y) {
+		this.setY(new Integer((int)y));
+	}
 }

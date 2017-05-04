@@ -62,4 +62,14 @@ public class TRectangle extends GPos implements IRectangle<Integer> {
 	public Graphics2D draw(Graphics2D g2d, int width, int height) {
 		return g2d;
 	}
+
+	@Override
+	public void setX(double x) {
+		this.setX(new Integer((int)x));
+	}
+
+	@Override
+	public void setY(double y) {
+		this.setY(new Integer((int)y));
+	}
 }

@@ -108,7 +108,7 @@ public class GScaleBar extends GRectangle implements IGDraw {
 			int y = getY();
 			int w = getWidth();
 			int h = getHeight();
-			double pxSize = gmap.getPxSize();
+			double oneUnitPxCount = 1 / gmap.getPxSize();
 			w = w <= 0 ? width : w;
 			h = h <= 0 ? height : h;
 
@@ -128,20 +128,20 @@ public class GScaleBar extends GRectangle implements IGDraw {
 				labelStyle.setGraphics2D(g2d);
 			}
 			int laststartx = x;
-			pxSize = pxSize * unitinfo.getMultiple();
+			oneUnitPxCount = oneUnitPxCount * unitinfo.getMultiple();
 			while (curPx < drawPx) {
 				String label = curLength + "";
 				uarea = g2d.getFontMetrics().getStringBounds(label, g2d);
-				int curEndPx = (int) (laststartx + pxSize * curLength);
-				int curLabelPx = (int) (x + curPx + pxSize * curLength / 2 - uarea.getWidth() / 2);
+				int curEndPx = (int) (laststartx + oneUnitPxCount * curLength);
+				int curLabelPx = (int) (x + curPx + oneUnitPxCount * curLength / 2 - uarea.getWidth() / 2);
 				vlineDrawer.draw(g2d, laststartx, curHeightPx, curEndPx, curHeightPx, (int) (curLength / unitinfo.getStep()));
 				g2d.drawLine(laststartx, curHeightPx - 3, laststartx, curHeightPx);
 				g2d.drawLine(curEndPx, curHeightPx - 3, curEndPx, curHeightPx);
 				this.drawStringLU(g2d, label, curLabelPx, curHeightPx + 3);
 				laststartx = curEndPx;
-				curPx = curPx + pxSize * curLength;
+				curPx = curPx + oneUnitPxCount * curLength;
 				curLength += unitinfo.getStep();
-				if (curPx + pxSize * curLength > drawPx) {
+				if (curPx + oneUnitPxCount * curLength > drawPx) {
 					break;
 				}
 			}

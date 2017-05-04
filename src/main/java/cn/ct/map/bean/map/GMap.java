@@ -53,8 +53,8 @@ public class GMap extends GRectangle implements IGDraw {
 				center.setCrs(map.getCoordinateReferenceSystem());
 			}
 			if(this.getWidth() > 0 && this.getHeight() > 0 & pxSize > 0 & center != null){
-				double map_half_width = 0.5 * this.getWidth() / pxSize;
-				double map_half_height = 0.5 * this.getHeight() / pxSize;
+				double map_half_width = 0.5 * this.getWidth() * pxSize;
+				double map_half_height = 0.5 * this.getHeight() * pxSize;
 				mapBounds = new ReferencedEnvelope(center.getX() - map_half_width ,center.getX() + map_half_width, center.getY() - map_half_height, center.getY() + map_half_height, center.getCrs());
 			} else{
 				mapBounds = map.getMaxBounds();
@@ -67,8 +67,8 @@ public class GMap extends GRectangle implements IGDraw {
 		if(map != null){
 			if(pxSize > 0 & mapBounds != null){
 				center = new MReferencePos(mapBounds.getMedian(0), mapBounds.getMedian(1), mapBounds.getCoordinateReferenceSystem());
-				this.setWidth((int)(mapBounds.getWidth() * pxSize + 0.5));
-				this.setHeight((int)(mapBounds.getHeight() * pxSize + 0.5));
+				this.setWidth((int)(mapBounds.getWidth() / pxSize + 0.5));
+				this.setHeight((int)(mapBounds.getHeight() / pxSize + 0.5));
 			}
 		}
 	}
@@ -87,6 +87,11 @@ public class GMap extends GRectangle implements IGDraw {
 	public GMap(MapContent map) {
 		super();
 		this.map = map;
+	}
+	public GMap(CoordinateReferenceSystem crs) {
+		super();
+		this.map = new MapContent();
+		this.map.getViewport().setCoordinateReferenceSystem(crs);
 	}
 
 	public GMap(MapContent map, ReferencedEnvelope mapBounds) {
